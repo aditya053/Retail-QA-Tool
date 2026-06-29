@@ -1,4 +1,6 @@
 
+import streamlit as st
+
 from dotenv import load_dotenv
 
 from langchain_chroma import Chroma
@@ -18,6 +20,12 @@ from few_shots import few_shots
 # =============================================================================
 
 load_dotenv()
+
+# Load API key from Streamlit Cloud if available
+try: 
+    GA_TOKEN = st.secrets["GA_TOKEN"] # Streamlit Cloud except Exception: pass
+except Exception: 
+    pass
 
 # =============================================================================
 # Models
