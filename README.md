@@ -20,12 +20,6 @@ A Generative AI-powered application that converts natural language questions int
 * SQLite
 * SQLAlchemy
 
-## Architecture
-
-<p align="center">
-  <img src="assets/architecture.png" width="850">
-</p>
-
 ## Application
 
 <p align="center">
