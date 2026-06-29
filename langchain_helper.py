@@ -15,10 +15,7 @@ from langchain_google_genai import (
 
 from few_shots import few_shots
 
-# =============================================================================
 # Environment
-# =============================================================================
-
 load_dotenv()
 
 # Load API key from Streamlit Cloud if available
@@ -27,10 +24,8 @@ try:
 except Exception: 
     pass
 
-# =============================================================================
-# Models
-# =============================================================================
 
+# Models
 gemini_llm = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite",
     temperature=0,
@@ -40,18 +35,12 @@ embedding_model = GoogleGenerativeAIEmbeddings(
     model="models/gemini-embedding-001"
 )
 
-# =============================================================================
 # Database
-# =============================================================================
-
 db = SQLDatabase.from_uri(
     "sqlite:///database/retail.db"
 )
 
-# =============================================================================
 # Few-shot Retrieval
-# =============================================================================
-
 example_texts = [
     f"""Question:
 {ex['input']}
@@ -79,10 +68,7 @@ example_selector = SemanticSimilarityExampleSelector(
     k=2,
 )
 
-# =============================================================================
 # Prompts
-# =============================================================================
-
 sql_prompt = """You are an expert MySQL developer.
 
 Generate ONLY a valid MySQL query that answers the user's question.
@@ -135,10 +121,7 @@ SQL Result:
 Answer:
 """
 
-# =============================================================================
 # Prompt Templates
-# =============================================================================
-
 sql_example_prompt = PromptTemplate(
     input_variables=["input", "sql_cmd"],
     template="Question:\n{input}\n\nSQL Query:\n{sql_cmd}",
@@ -165,10 +148,7 @@ answer_few_shot_prompt = FewShotPromptTemplate(
     input_variables=["input", "sql_result"],
 )
 
-# =============================================================================
 # Public API
-# =============================================================================
-
 def get_few_shot_db_chain():
     """
     Build and return the SQL generation and answer generation chains.
