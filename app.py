@@ -1,12 +1,18 @@
 """
-app.py
-
 Streamlit application for the Retail Q&A Tool.
 """
 
+import time
 import streamlit as st
 
 from langchain_helper import db, get_few_shot_db_chain
+
+
+# Gemini 3.1 Flash Lite: 15 RPM
+# Each question makes 2 API calls (SQL generation + answer generation)
+# Limit users to 7 questions per minute.
+MAX_REQUESTS = 7
+WINDOW = 60  # seconds
 
 
 st.set_page_config(
@@ -48,7 +54,25 @@ question = st.text_input(
     placeholder="e.g. Which product earns the most after discounts?",
 )
 
+# Initialize request history
+if "request_times" not in st.session_state:
+    st.session_state.request_times = []
+
 if question:
+
+    now = time.time()
+
+    # Keep only requests from the last minute
+    st.session_state.request_times = [
+        t for t in st.session_state.request_times
+        if now - t < WINDOW
+    ]
+
+    if len(st.session_state.request_times) >= MAX_REQUESTS:
+        st.warning("Rate limit exceeded. Please wait a minute before asking more questions.")
+        st.stop()
+
+    st.session_state.request_times.append(now)
 
     with st.spinner("Generating answer..."):
 
